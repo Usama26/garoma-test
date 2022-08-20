@@ -57,11 +57,16 @@ router.post('/bookMeeting', async (req, res) => {
         from_time, to_time, meeting_date
       });
 
+      const weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+      console.log(new Date(meeting_date).getDay());
+      console.log(weekday[new Date(meeting_date).getDay()]);
+
       if (booking)
         return res.status(status.BOOK_MEETING_FAILED.code).json({
           ...status.BOOK_MEETING_FAILED,
           message: 'Booking already exists',
         });
+
 
         let service = await User.findOne({
           'days.slots': {
@@ -70,16 +75,28 @@ router.post('/bookMeeting', async (req, res) => {
               to_time,
             },
           },
+          'days.name': weekday[new Date(meeting_date).getDay()],
           _id: to_user,
         });
+        m = service.days.findIndex(x => x.name === weekday[new Date(meeting_date).getDay()]);
+        let check = false
+        console.log(check,"BCheck");
+        service.days[m].slots.forEach(x => {
+          if (x.from_time === from_time && x.to_time === to_time) check = true
+        } )
+          
+        console.log(m,'X');
+        console.log(check,"ACheck");
 
-        if(!service)
+        console.log(service);
+        if(!service || !check)
         return res.status(status.BOOK_MEETING_FAILED.code).json({
           ...status.BOOK_MEETING_FAILED,
           message: 'No Slot available',
         });
-        
-        
+
+
+
         const newBooking = new Booking({
             from_user,
             to_user,
