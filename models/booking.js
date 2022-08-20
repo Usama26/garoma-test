@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
+
 
 
 const bookingSchema = mongoose.Schema({
@@ -34,4 +34,4 @@ const bookingSchema = mongoose.Schema({
 const Booking = mongoose.model('Booking', bookingSchema);
 
 module.exports.bookingSchema = bookingSchema;
-module.exports.BookingModel = Booking;
+module.exports.Booking = Booking;

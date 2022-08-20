@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const { User } = require('../models/user');
+const { Booking } = require('../models/booking');
 const status = require('./status');
+var ObjectId = require('mongoose').Types.ObjectId;
 
 const {  validateBooking } = require('../validations/user');
 
@@ -20,15 +22,11 @@ router.post('/bookMeeting', async (req, res) => {
       message: validBooking.error.details[0].message,
     });
 
-    // if both ids are same then return error
-    if (req.body.from_user == req.body.to_user) {
-        return res.status(status.BOOK_MEETING_FAILED.code).json({
-            ...status.BOOK_MEETING_FAILED,
-            message: 'Both users cannot be same',
-        })};
+
+    const { from_user, to_user, from_time, to_time, meeting_date } = req.body.data;
     
     const users = await User.find({
-      _id: { $in: [req.body.data.from_user, req.body.data.to_user] },
+      _id: { $in: [from_user, to_user] },
     });
     if (users.length !== 2)
       return res.status(status.BOOK_MEETING_FAILED.code).json({
@@ -36,12 +34,32 @@ router.post('/bookMeeting', async (req, res) => {
         message: 'No user found with the given id(s)',
       });
 
+     // checking if the user is already booked for the same time
+      const booking = await Booking.findOne({
+        from_user: { $in: [from_user, to_user] },
+        to_user: { $in: [from_user, to_user] },
+        from_time, to_time, meeting_date
+      });
 
-    const booking = new Booking({ from_user, to_user, from_time, to_time, meeting_date });
-    
-    const savedBooking = await booking.save();
-    
-    res.send(savedBooking);
+      if (booking)
+        return res.status(status.BOOK_MEETING_FAILED.code).json({
+          ...status.BOOK_MEETING_FAILED,
+          message: 'Booking already exists',
+        });
+
+        const newBooking = new Booking({
+            from_user,
+            to_user,
+            from_time,
+            to_time,
+            meeting_date
+        });
+        const savedBooking = await newBooking.save();
+        return res
+      .status(status.BOOK_MEETING_SUCCESS.code)
+      .json({ ...status.BOOK_MEETING_SUCCESS, payload: savedBooking });
+
+
 
 })
 
