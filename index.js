@@ -2,11 +2,17 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const express = require('express');
 
+dotenv.config();
 const app = express();
 
 //Middlewares
 app.use(express.json());
+const general = require('./routes/general');
 
+
+
+
+app.use('/api', general);
 
 // Setting up timezone
 const moment = require('moment-timezone');
