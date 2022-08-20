@@ -7,7 +7,12 @@ var ObjectId = require('mongoose').Types.ObjectId;
 const {  validateBooking } = require('../validations/user');
 
 
-router.get("/", async (req, res) => {
+router.get("/meetingSlots", async (req, res) => {
+  if (!req.query.userId)
+    return res
+      .status(status.GET_USER_SLOTS_FAILED.code)
+      .json({ ...status.GET_USER_SLOTS_FAILED, message: 'No id provided' });
+
  let x = await User.find()
 let y = await User({name: "John" , email : "m@m.com" , password:"999"}).save();
   res.send({y,x});
@@ -80,15 +85,12 @@ router.post('/bookMeeting', async (req, res) => {
         });
         m = service.days.findIndex(x => x.name === weekday[new Date(meeting_date).getDay()]);
         let check = false
-        console.log(check,"BCheck");
+
         service.days[m].slots.forEach(x => {
           if (x.from_time === from_time && x.to_time === to_time) check = true
         } )
           
-        console.log(m,'X');
-        console.log(check,"ACheck");
 
-        console.log(service);
         if(!service || !check)
         return res.status(status.BOOK_MEETING_FAILED.code).json({
           ...status.BOOK_MEETING_FAILED,
