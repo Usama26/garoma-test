@@ -25,6 +25,22 @@ router.post('/bookMeeting', async (req, res) => {
 
     const { from_user, to_user, from_time, to_time, meeting_date } = req.body.data;
     
+
+
+    if (meeting_date < new Date().toISOString()) {
+      return res.status(status.BOOK_MEETING_FAILED.code).json({
+        ...status.BOOK_MEETING_FAILED,
+        message: 'Meeting date cannot be in the past',
+      });
+    }
+
+  
+    if (from_time > to_time) {
+      return res.status(status.BOOK_MEETING_FAILED.code).json({
+        ...status.BOOK_MEETING_FAILED,
+        message: 'From time cannot be after to time',
+      });}
+
     const users = await User.find({
       _id: { $in: [from_user, to_user] },
     });

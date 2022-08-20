@@ -10,7 +10,7 @@ function validateBooking(booking) {
             to_user: Joi.objectId().required(),
             from_time: Joi.string().required(),
             to_time: Joi.string().required(),
-            meeting_date: Joi.string().required(),
+            meeting_date: Joi.date().iso().required(),
         }).required()
     });
 
