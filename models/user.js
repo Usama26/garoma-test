@@ -1,5 +1,18 @@
 const mongoose = require('mongoose');
 
+const slotSchema = mongoose.Schema({
+    name:String,
+    slots : [{
+        from_time: String,
+        to_time: String,
+        bookings: {
+            type: mongoose.Schema.Types.Mixed
+          }
+    }]
+  });
+
+const Slots = mongoose.model('Slots', slotSchema);
+module.exports.Slots = Slots;
 
 
 const userSchema = mongoose.Schema({
@@ -19,6 +32,9 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    days:[
+        slotSchema
+    ],
 
 }, {
     timestamps: true

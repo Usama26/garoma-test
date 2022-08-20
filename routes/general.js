@@ -63,6 +63,23 @@ router.post('/bookMeeting', async (req, res) => {
           message: 'Booking already exists',
         });
 
+        let service = await User.findOne({
+          'days.slots': {
+            $elemMatch: {
+              from_time,
+              to_time,
+            },
+          },
+          _id: to_user,
+        });
+
+        if(!service)
+        return res.status(status.BOOK_MEETING_FAILED.code).json({
+          ...status.BOOK_MEETING_FAILED,
+          message: 'No Slot available',
+        });
+        
+        
         const newBooking = new Booking({
             from_user,
             to_user,
