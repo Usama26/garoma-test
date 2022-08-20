@@ -1,5 +1,5 @@
 
-const Joi = require('joi').extend(require('@joi/date'));
+const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
 
 

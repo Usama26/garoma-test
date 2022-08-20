@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { User } = require('../models/user');
+const status = require('./status');
 
 const {  validateBooking } = require('../validations/user');
 
