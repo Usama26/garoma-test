@@ -89,6 +89,7 @@ router.post('/bookMeeting', async (req, res) => {
         message: 'From time cannot be after to time',
       });}
 
+  try{
     const users = await User.find({
       _id: { $in: [from_user, to_user] },
     });
@@ -154,7 +155,15 @@ router.post('/bookMeeting', async (req, res) => {
       .status(status.BOOK_MEETING_SUCCESS.code)
       .json({ ...status.BOOK_MEETING_SUCCESS, payload: savedBooking });
 
-
+    }
+    catch(error){
+      return res
+        .status(status.BOOK_MEETING_FAILED.code)
+        .json({ ...status.BOOK_MEETING_FAILED,       
+          message: error.message
+          ? error.message
+          : status.BOOK_MEETING_FAILED.message, });
+    }
 
 })
 
