@@ -1,4 +1,16 @@
 module.exports = {
+  GET_USER_SLOT_SUCCESS: {
+    code: 200,
+    success: true,
+    type: 'GET_USER_SLOT_SUCCESS',
+    message: 'User slots retrieved successfully'
+  },
+  GET_USER_SLOT_FAILED: {
+    code: 400,
+    success: false,
+    type: 'GET_USER_SLOT_FAILED',
+    message: 'User slots retrieval failed'
+  },
   BOOK_MEETING_SUCCESS: {
     code: 200,
     success: true,
