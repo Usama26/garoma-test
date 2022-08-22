@@ -24,28 +24,11 @@ router.get("/meetingSlots", async (req, res) => {
         { to_user: req.query.userId }
       ]
     });
-
-    
-    // let slots = user.days.map(day => {
-    //   return {
-    //     ...day,
-    //     slots: day.slots.map(slot => {
-    //       return {
-    //         ...slot,
-    //         bookings: bookings.filter(booking => {
-    //           return (
-    //             booking.from_time === slot.from_time &&
-    //             booking.to_time === slot.to_time
-    //           );
-    //         })
-    //       };
-    //     })
-    //   };
-    // })
+ 
     let schedule = {}
     const weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
     user.days.map(day => {
-      console.log(day.name);
+
       schedule[day.name] = []
       day.slots.map(slot => {
   
@@ -53,23 +36,18 @@ router.get("/meetingSlots", async (req, res) => {
         bookings.forEach(booking => {
           if((booking.from_time === slot.from_time && booking.to_time === slot.to_time) && weekday[new Date(booking.meeting_date).getDay()] === day.name){
             bookingsArr.push(booking.meeting_date)
-            // if(!slots[day.name]){
-            //   slots[day.name] = []
-            // }
-            // slots[day.name].push(booking)
-          console.log("X");
+
           }
           schedule[day.name].push({slot,booking_dates:bookingsArr})
         })
-
-        console.log(slot);
-
         })
       })
     
 
-   
-    res.send({schedule});
+      return res
+      .status(status.GET_USER_SLOT_SUCCESS.code)
+      .json({ ...status.GET_USER_SLOT_SUCCESS, payload: schedule });
+
   }
   catch(error){
     return res
