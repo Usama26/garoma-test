@@ -107,8 +107,7 @@ router.post('/bookMeeting', async (req, res) => {
       });
 
       const weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-      console.log(new Date(meeting_date).getDay());
-      console.log(weekday[new Date(meeting_date).getDay()]);
+
 
       if (booking)
         return res.status(status.BOOK_MEETING_FAILED.code).json({
